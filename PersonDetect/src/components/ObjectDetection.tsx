@@ -3,7 +3,7 @@ import Webcam from 'react-webcam';
 import * as tf from '@tensorflow/tfjs';
 import * as cocossd from '@tensorflow-models/coco-ssd';
 import * as Human from '@vladmandic/human';
-import { Camera, CameraOff, Info } from 'lucide-react';
+import { Camera, CameraOff } from 'lucide-react';
 
 interface Detection {
   bbox: [number, number, number, number];
@@ -28,10 +28,12 @@ export function ObjectDetection() {
   const [isLoading, setIsLoading] = useState(true);
   const [personCount, setPersonCount] = useState({ total: 0, male: 0, female: 0 });
   const [ageGroups, setAgeGroups] = useState({
-    child: 0, // 0-12
-    teen: 0,  // 13-19
-    adult: 0, // 20-59
-    senior: 0 // 60+
+    children: 0,    // 0-12
+    teens: 0,       // 13-19
+    preAdult: 0,    // 20-30
+    adults: 0,      // 31-40
+    man: 0,         // 41-50
+    older: 0        // 51+
   });
 
   const videoConstraints = {
@@ -82,10 +84,12 @@ export function ObjectDetection() {
   }, []);
 
   const getAgeGroup = (age: number) => {
-    if (age <= 12) return 'child';
-    if (age <= 19) return 'teen';
-    if (age <= 59) return 'adult';
-    return 'senior';
+    if (age <= 12) return 'children';
+    if (age <= 19) return 'teens';
+    if (age <= 30) return 'preAdult';
+    if (age <= 40) return 'adults';
+    if (age <= 50) return 'man';
+    return 'older';
   };
 
   const detect = async () => {
@@ -125,10 +129,12 @@ export function ObjectDetection() {
       };
 
       const ages = {
-        child: 0,
-        teen: 0,
-        adult: 0,
-        senior: 0
+        children: 0,
+        teens: 0,
+        preAdult: 0,
+        adults: 0,
+        man: 0,
+        older: 0
       };
 
       humanResults.face.forEach(face => {
@@ -304,19 +310,27 @@ export function ObjectDetection() {
                   <div className="space-y-2">
                     <div className="bg-green-600/30 p-3 rounded-lg flex justify-between">
                       <span className="text-white">Children (0-12)</span>
-                      <span className="font-bold text-white">{ageGroups.child}</span>
+                      <span className="font-bold text-white">{ageGroups.children}</span>
                     </div>
                     <div className="bg-yellow-600/30 p-3 rounded-lg flex justify-between">
                       <span className="text-white">Teens (13-19)</span>
-                      <span className="font-bold text-white">{ageGroups.teen}</span>
+                      <span className="font-bold text-white">{ageGroups.teens}</span>
                     </div>
-                    <div className="bg-orange-600/30 p-3 rounded-lg flex justify-between">
-                      <span className="text-white">Adults (20-59)</span>
-                      <span className="font-bold text-white">{ageGroups.adult}</span>
+                    <div className="bg-blue-600/30 p-3 rounded-lg flex justify-between">
+                      <span className="text-white">Pre-Adult (20-30)</span>
+                      <span className="font-bold text-white">{ageGroups.preAdult}</span>
+                    </div>
+                    <div className="bg-indigo-600/30 p-3 rounded-lg flex justify-between">
+                      <span className="text-white">Adults (31-40)</span>
+                      <span className="font-bold text-white">{ageGroups.adults}</span>
                     </div>
                     <div className="bg-purple-600/30 p-3 rounded-lg flex justify-between">
-                      <span className="text-white">Seniors (60+)</span>
-                      <span className="font-bold text-white">{ageGroups.senior}</span>
+                      <span className="text-white">Man (41-50)</span>
+                      <span className="font-bold text-white">{ageGroups.man}</span>
+                    </div>
+                    <div className="bg-red-600/30 p-3 rounded-lg flex justify-between">
+                      <span className="text-white">Older (51+)</span>
+                      <span className="font-bold text-white">{ageGroups.older}</span>
                     </div>
                   </div>
                 </div>
@@ -329,7 +343,7 @@ export function ObjectDetection() {
             <ul className="list-disc list-inside space-y-2">
               <li>Real-time person detection</li>
               <li>Gender classification with confidence scores</li>
-              <li>Age estimation and grouping</li>
+              <li>Detailed age group categorization</li>
               <li>Live demographics dashboard</li>
               <li>Color-coded visualizations</li>
             </ul>
